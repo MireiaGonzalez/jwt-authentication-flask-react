@@ -7,12 +7,28 @@ from api.utils import generate_sitemap, APIException
 
 api = Blueprint('api', __name__)
 
+@api.route('/user/signup', methods=['POST'])
+def register_user():
+    body = request.get_json()
+    new_user = User(email=body['email'], password=body['password'], is_active=True)
+    db.session.add(new_user)
+    db.session.commit()
 
-@api.route('/hello', methods=['POST', 'GET'])
-def handle_hello():
+    return jsonify(new_user.serialize()), 201
 
-    response_body = {
-        "message": "Hello! I'm a message that came from the backend, check the network tab on the google inspector and you will see the GET request"
-    }
+@api.route('/user/login', methods=['POST'])
+def user_login():
+    body = request.get_json()
+    user = db.session.query(User).filter(User.email == body['email'])
+    if user.password == body['password']:
+        new_token = create_access_token(identity=user.id)
+        return jsonify(new_token), 200
+    else:
+        return jsonify('Wrong password'), 401
 
-    return jsonify(response_body), 200
+@api.route('/user/validate', methods=['GET'])
+@jwt_required()
+def user_validation():
+    token = get_jwt_identity()
+    user = User.query.get(token)
+    return jsonify(user.serialize()), 200
