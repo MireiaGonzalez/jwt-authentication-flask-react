@@ -1,49 +1,57 @@
 const getState = ({ getStore, getActions, setStore }) => {
-	return {
-		store: {
-			message: null,
-			demo: [
-				{
-					title: "FIRST",
-					background: "white",
-					initial: "white"
-				},
-				{
-					title: "SECOND",
-					background: "white",
-					initial: "white"
-				}
-			]
-		},
-		actions: {
-			// Use getActions to call a function within a fuction
-			exampleFunction: () => {
-				getActions().changeColor(0, "green");
-			},
+  const URL =
+    "https://3001-mireiagonzalez-jwtauthen-9tmmlparq2f.ws-eu40.gitpod.io";
 
-			getMessage: () => {
-				// fetching data from the backend
-				fetch(process.env.BACKEND_URL + "/api/hello")
-					.then(resp => resp.json())
-					.then(data => setStore({ message: data.message }))
-					.catch(error => console.log("Error loading message from backend", error));
-			},
-			changeColor: (index, color) => {
-				//get the store
-				const store = getStore();
+  return {
+    store: {
+      token: "",
+    },
+    actions: {
+      registerUser: (email, password) => {
+        fetch(URL + "/api/user/signup", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ email: email, password: password }),
+        })
+          .then((res) => res.json())
+          .then((data) => console.log(data))
+          .catch((err) => console.log(err));
+      },
 
-				//we have to loop the entire demo array to look for the respective index
-				//and change its color
-				const demo = store.demo.map((elm, i) => {
-					if (i === index) elm.background = color;
-					return elm;
-				});
+      login: (userEmail, userPassword) => {
+        const store = getStore();
 
-				//reset the global store
-				setStore({ demo: demo });
-			}
-		}
-	};
+        fetch(URL + "api/user/login", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ email: userEmail, password: userPassword }),
+        })
+          .then((res) => res.json())
+          .then((data) => {
+            setStore({ token: data });
+            localStorage.setItem("token", JSON.stringify(data));
+          })
+          .catch((err) => console.log(err));
+      },
+
+      validation: () => {
+        const store = getStore();
+        fetch(URL + "api/user/validate", {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${store.token}`,
+          },
+        })
+          .then((res) => res.json())
+          .then((data) => console.log(data, store.token))
+          .catch((err) => console.log(err));
+      },
+    },
+  };
 };
 
 export default getState;
