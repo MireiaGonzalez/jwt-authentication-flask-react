@@ -4,7 +4,7 @@ import "../../styles/index.css";
 
 import { Context } from "../store/appContext";
 
-export const Register = () => {
+export const Login = () => {
   const { store, actions } = useContext(Context);
   const [redirection, setRedirection] = useState(false);
   const [userEmail, setUserEmail] = useState("");
@@ -12,14 +12,13 @@ export const Register = () => {
 
   const handleRegistration = async (e) => {
     e.preventDefault();
-    await actions.registerUser(userEmail, userPassword);
+    await actions.login(userEmail, userPassword);
     setRedirection(true);
   };
 
-  console.log(userEmail, userPassword);
   return (
     <>
-      <h2 className="text-center mt-5 text-success">REGISTER</h2>
+      <h2 className="text-center mt-5 text-success">LOG IN</h2>
       <form className="container-fluid p-3 forms" onSubmit={handleRegistration}>
         <div className="mb-3 mt-2">
           <label htmlFor="exampleFormControlInput1" className="form-label">
@@ -29,7 +28,7 @@ export const Register = () => {
             type="email"
             className="form-control"
             id="exampleFormControlInput1"
-            placeholder="yourname@example.com"
+            placeholder="Enter your email"
             onChange={(e) => setUserEmail(e.target.value)}
           />
         </div>
@@ -41,14 +40,14 @@ export const Register = () => {
             type="password"
             className="form-control"
             id="exampleFormControlInput2"
-            placeholder="Choose a strong password"
+            placeholder="Enter your password"
             onChange={(e) => setUserPassword(e.target.value)}
           />
         </div>
         <button type="submit" className="btn btn-success">
-          Register
+          Log In
         </button>
-        {redirection ? <Redirect to="/login"></Redirect> : null}
+        {redirection ? <Redirect to="/private"></Redirect> : null}
       </form>
     </>
   );

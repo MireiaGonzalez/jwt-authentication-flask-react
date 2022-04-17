@@ -1,10 +1,10 @@
 const getState = ({ getStore, getActions, setStore }) => {
   const URL =
-    "https://3001-mireiagonzalez-jwtauthen-9tmmlparq2f.ws-eu40.gitpod.io";
+    "https://3001-mireiagonzalez-jwtauthen-jg8v8jj70jv.ws-eu40.gitpod.io";
 
   return {
     store: {
-      token: "",
+      token: localStorage.token,
     },
     actions: {
       registerUser: (email, password) => {
@@ -20,15 +20,15 @@ const getState = ({ getStore, getActions, setStore }) => {
           .catch((err) => console.log(err));
       },
 
-      login: (userEmail, userPassword) => {
+      login: (email, password) => {
         const store = getStore();
 
-        fetch(URL + "api/user/login", {
+        fetch(URL + "/api/user/login", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ email: userEmail, password: userPassword }),
+          body: JSON.stringify({ email: email, password: password }),
         })
           .then((res) => res.json())
           .then((data) => {
@@ -40,7 +40,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 
       validation: () => {
         const store = getStore();
-        fetch(URL + "api/user/validate", {
+        fetch(URL + "/api/user/validate", {
           method: "GET",
           headers: {
             Authorization: `Bearer ${store.token}`,

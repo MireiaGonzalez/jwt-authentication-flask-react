@@ -16,17 +16,16 @@ api = Blueprint('api', __name__)
 
 @api.route('/user/signup', methods=['POST'])
 def register_user():
-    body = request.get_json()
+    body = request.get_json(force=True)
     new_user = User(email=body['email'], password=body['password'], is_active=True)
     db.session.add(new_user)
     db.session.commit()
-
     return jsonify(new_user.serialize()), 201
 
 @api.route('/user/login', methods=['POST'])
 def user_login():
-    body = request.get_json()
-    user = db.session.query(User).filter(User.email == body['email'])
+    body = request.get_json(force=True)
+    user = db.session.query(User).filter(User.email == body['email']).first()
     if user.password == body['password']:
         new_token = create_access_token(identity=user.id)
         return jsonify(new_token), 200

@@ -7,6 +7,8 @@ import injectContext from "./store/appContext";
 //Pages
 import { Home } from "./pages/home.jsx";
 import { Register } from "./pages/Register.jsx";
+import { Login } from "./pages/Login.jsx";
+import { Validation } from "./pages/Validation.jsx";
 
 //Components
 import { Navbar } from "./component/navbar.jsx";
@@ -30,7 +32,12 @@ const Layout = () => {
             <Route exact path="/register">
               <Register />
             </Route>
-            <Route exact path="/single/:theid"></Route>
+            <Route exact path="/login">
+              <Login />
+            </Route>
+            <Route exact path="/private">
+              <Validation />
+            </Route>
             <Route>
               <h1>Not found!</h1>
             </Route>
